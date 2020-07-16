@@ -1,0 +1,7 @@
+influxdb
+influxdb_client
+mysqlclient
+pyyaml
+setuptools
+tqdm
+wheel
