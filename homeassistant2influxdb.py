@@ -169,11 +169,24 @@ def main():
                 batch_size_cur += 1
 
                 if batch_size_cur >= batch_size_max:
-                    influx.write(batch_json)
+                    while True:
+                        try:
+                            influx.write(batch_json)
+                        except Exception as e:
+                            print(e)
+                        else:
+                            break
                     batch_json = []
                     batch_size_cur = 0
 
-    influx.write(batch_json)
+
+    while True:
+        try:
+            influx.write(batch_json)
+        except Exception as e:
+            print(e)
+        else:
+            break
     influx.close()
 
     # print statistics - ideally you have one friendly name per entity_id
