@@ -49,7 +49,9 @@ be done trivially, I believe.
 In order to not duplicate logic, the script uses the InfluxDB component of
 Home Assistant directly.
 
-I've tested this on Ubuntu 18.04 with Python 3.7.
+Tested on 
+- Ubuntu 18.04 with Python 3.7.
+- Ubuntu 20.04.1 LTS with Python 3.8.5
 
 Setup:
 1. `sudo apt install python3 python3.7-dev`
@@ -60,11 +62,17 @@ Setup:
 
 Dependency installation:
 1. `. .venv/bin/activate`
-2. `pip install -r home-assistant-core/requirements.txt`
-3. `pip install -r requirements.txt`
+2. `pip install -r requirements.txt`
+3. `pip install -r home-assistant-core/requirements.txt`
+
+For MySQL
+1. `sudo apt install libmysqlclient-dev`
+
+For MariaDB
+1. `sudo apt install libmariadbclient-dev`
 
 Run script:
-1. Copy your InfluxDB configuration from Home Assistant to influxdb.yaml.
+1. Use and edit the provided influxdb.yaml example OR copy your InfluxDB configuration from Home Assistant to influxdb.yaml.
    This should be the file that you include via `influxdb: !include influx.yaml`
    in your installation (i.e. it does not start with `influxdb:\n`!).
    It must not include any !secret statements but rather the token (for v2)
