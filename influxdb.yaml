@@ -1,0 +1,4 @@
+# This is your influx configuration from home assistant. Note the two indents before each line!
+  host: localhost
+  port: 8086
+  database: home_assistant

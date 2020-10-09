@@ -72,9 +72,12 @@ def main():
     parser.add_argument('--host', '-s',
                         dest='host', action='store', required=True,
                         help='MySQL/MariaDB host')
+    parser.add_argument('--port', '-o',
+                        dest='port', action='store', required=True,
+                        help='MySQL/MariaDB host')
     parser.add_argument('--database', '-d',
-                        dest='database', action='store', required=True,
-                        help='MySQL/MariaDB database')
+                        dest='database', action='store', required=false, type=int, default=3306,
+                        help='MySQL/MariaDB port. MySQL 3306 (default), MariaDB 3307')
     parser.add_argument('--count', '-c',
                         dest='row_count', action='store', required=False, type=int, default=0,
                         help='If 0 (default), determine upper bound of number of rows by querying database, '
@@ -95,7 +98,7 @@ def main():
     converter = _generate_event_to_json(influx_config)
 
     # connect to MySQL/MariaDB database
-    connection = mysql_connect(host=args.host, user=args.user, password=args.password, database=args.database, cursorclass=cursors.SSCursor, charset="utf8")
+    connection = mysql_connect(host=args.host, port=args.port, user=args.user, password=args.password, database=args.database, cursorclass=cursors.SSCursor, charset="utf8")
     cursor = connection.cursor()
 
     # untested: connect to SQLite file instead (you need to get rid of the first three `add_argument` calls above)
