@@ -9,7 +9,7 @@ import yaml
 from MySQLdb import connect as mysql_connect, cursors
 
 # SQLite (not tested)
-#import sqlite3
+import sqlite3
 
 # progress bar
 from tqdm import tqdm
@@ -63,14 +63,17 @@ def main():
     """
 
     parser = argparse.ArgumentParser()
+    parser.add_argument('--type', '-t',
+                        dest='type', action='store', required=True,
+                        help='Database type: MySQL, MariaDB or SQLite')
     parser.add_argument('--user', '-u',
-                        dest='user', action='store', required=True,
+                        dest='user', action='store', required=False,
                         help='MySQL/MariaDB username')
     parser.add_argument('--password', "-p",
-                        dest='password', action='store',
+                        dest='password', action='store', required=False,
                         help='MySQL/MariaDB password')
     parser.add_argument('--host', '-s',
-                        dest='host', action='store', required=True,
+                        dest='host', action='store', required=False,
                         help='MySQL/MariaDB host')
     parser.add_argument('--database', '-d',
                         dest='database', action='store', required=True,
@@ -94,12 +97,14 @@ def main():
     influx = get_influx_connection(influx_config, test_write=True, test_read=True)
     converter = _generate_event_to_json(influx_config)
 
-    # connect to MySQL/MariaDB database
-    connection = mysql_connect(host=args.host, user=args.user, password=args.password, database=args.database, cursorclass=cursors.SSCursor, charset="utf8")
-    cursor = connection.cursor()
+    if (args.type == "MySQL" or args.type == "MariaDB"):
+        # connect to MySQL/MariaDB database
+        connection = mysql_connect(host=args.host, user=args.user, password=args.password, database=args.database, cursorclass=cursors.SSCursor, charset="utf8")
+    else:
+        # connect to SQLite file instead (you need to get rid of the first three `add_argument` calls above)
+        connection = sqlite3.connect(args.database)
 
-    # untested: connect to SQLite file instead (you need to get rid of the first three `add_argument` calls above)
-    #connection = sqlite3.connect('home_assistant_v2.db')
+    cursor = connection.cursor()
 
     if args.row_count == 0:
         # query number of rows in states table - this will be more than the number of rows we
